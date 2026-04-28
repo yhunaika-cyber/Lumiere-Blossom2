@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumiere-Blossom Boutique</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: #faf9f7; color: #1a1a1a; min-height: 100vh; }
+  :root { --cream: #faf9f7; --black: #1a1a1a; --gold: #b8860b; --rose: #c9748a; --border: #e8e4df; }
+
+  nav { background: #fff; border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; letter-spacing: 1px; color: var(--black); }
+  .logo span { color: var(--gold); font-style: italic; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 13px; font-weight: 500; text-decoration: none; color: #555; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: color .2s; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-icons { display: flex; gap: 1rem; align-items: center; }
+  .icon-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--black); position: relative; padding: 6px; }
+  .cart-badge { position: absolute; top: 2px; right: 2px; background: var(--rose); color: #fff; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+  .search-bar { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; gap: 8px; background: #faf9f7; }
+  .search-bar input { border: none; background: none; outline: none; font-size: 13px; width: 180px; font-family: 'DM Sans', sans-serif; color: var(--black); }
+
+  .hero { background: linear-gradient(135deg, #1a1a1a 50%, #2d2d2d 100%); color: #fff; padding: 5rem 3rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; min-height: 380px; }
+  .hero-text h1 { font-family: 'Playfair Display', serif; font-size: 52px; line-height: 1.1; margin-bottom: 1rem; }
+  .hero-text h1 em { color: var(--gold); font-style: italic; }
+  .hero-text p { font-size: 15px; color: #aaa; margin-bottom: 2rem; line-height: 1.7; max-width: 380px; }
+  .btn-primary { background: var(--gold); color: #fff; border: none; padding: 14px 32px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.5px; cursor: pointer; border-radius: 2px; transition: opacity .2s; }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-outline { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4); padding: 14px 32px; font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; border-radius: 2px; margin-left: 12px; transition: border-color .2s; }
+  .btn-outline:hover { border-color: #fff; }
+  .hero-images { display: flex; gap: 16px; flex-shrink: 0; }
+  .hero-img-card { width: 120px; height: 160px; border-radius: 4px; overflow: hidden; }
+  .hero-img-card:nth-child(2) { margin-top: 24px; }
+
+  .filter-bar { background: #fff; border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; gap: 2rem; overflow-x: auto; }
+  .filter-label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: #888; white-space: nowrap; }
+  .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { padding: 6px 16px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; cursor: pointer; transition: all .2s; white-space: nowrap; background: #fff; color: #444; font-family: 'DM Sans', sans-serif; }
+  .chip.active, .chip:hover { background: var(--black); color: #fff; border-color: var(--black); }
+  .sort-select { margin-left: auto; border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; font-size: 12px; outline: none; font-family: 'DM Sans', sans-serif; background: #fff; color: var(--black); cursor: pointer; }
+
+  .main-content { padding: 2rem; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 400; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px; }
+
+  .product-card { background: #fff; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; cursor: pointer; transition: transform .2s, box-shadow .2s; position: relative; }
+  .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+  .product-img { width: 100%; height: 260px; display: flex; align-items: center; justify-content: center; font-size: 64px; background: #f5f3f0; position: relative; }
+  .product-badge { position: absolute; top: 10px; left: 10px; padding: 4px 10px; font-size: 11px; font-weight: 500; border-radius: 2px; letter-spacing: 0.5px; }
+  .badge-new { background: var(--black); color: #fff; }
+  .badge-sale { background: var(--rose); color: #fff; }
+  .badge-best { background: var(--gold); color: #fff; }
+  .product-info { padding: 16px; }
+  .product-brand { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 4px; }
+  .product-name { font-size: 15px; font-weight: 500; margin-bottom: 8px; line-height: 1.3; }
+  .product-rating { display: flex; align-items: center; gap: 4px; margin-bottom: 10px; }
+  .stars { color: var(--gold); font-size: 12px; }
+  .rating-count { font-size: 11px; color: #888; }
+  .product-price { display: flex; align-items: center; gap: 8px; }
+  .price-now { font-size: 17px; font-weight: 600; color: var(--black); }
+  .price-old { font-size: 13px; color: #aaa; text-decoration: line-through; }
+  .card-actions { padding: 12px 16px 16px; display: flex; gap: 8px; }
+  .btn-add { flex: 1; background: var(--black); color: #fff; border: none; padding: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 2px; transition: background .2s; }
+  .btn-add:hover { background: #333; }
+  .btn-wish { width: 40px; height: 40px; border: 1px solid var(--border); background: #fff; border-radius: 2px; cursor: pointer; font-size: 16px; transition: all .2s; }
+  .btn-wish:hover, .btn-wish.active { background: var(--rose); border-color: var(--rose); color: #fff; }
+
+  .cart-overlay { position: fixed; top: 0; right: -420px; width: 400px; height: 100vh; background: #fff; box-shadow: -4px 0 32px rgba(0,0,0,0.12); z-index: 200; transition: right .3s ease; display: flex; flex-direction: column; }
+  .cart-overlay.open { right: 0; }
+  .cart-header { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .cart-header h3 { font-family: 'Playfair Display', serif; font-size: 20px; }
+  .close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #888; padding: 4px; }
+  .close-btn:hover { color: var(--black); }
+  .cart-items { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+  .cart-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); align-items: center; }
+  .cart-item-img { width: 64px; height: 80px; background: #f5f3f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .cart-item-variant { font-size: 12px; color: #888; margin-bottom: 6px; }
+  .cart-item-price { font-size: 15px; font-weight: 600; }
+  .qty-ctrl { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  .qty-btn { width: 24px; height: 24px; border: 1px solid var(--border); background: #fff; cursor: pointer; border-radius: 2px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .qty-btn:hover { background: var(--black); color: #fff; border-color: var(--black); }
+  .qty-num { font-size: 14px; font-weight: 500; min-width: 20px; text-align: center; }
+  .cart-remove { background: none; border: none; color: #ccc; cursor: pointer; font-size: 16px; padding: 4px; }
+  .cart-remove:hover { color: var(--rose); }
+  .cart-footer { padding: 1.5rem; border-top: 1px solid var(--border); }
+  .cart-total-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #666; }
+  .cart-total-final { display: flex; justify-content: space-between; font-size: 18px; font-weight: 600; margin: 12px 0 16px; }
+  .btn-checkout { width: 100%; background: var(--black); color: #fff; border: none; padding: 15px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; letter-spacing: 0.5px; transition: background .2s; }
+  .btn-checkout:hover { background: #333; }
+  .empty-cart { text-align: center; padding: 3rem 1rem; color: #aaa; }
+  .empty-cart p { font-size: 14px; margin-top: 8px; }
+
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 300; display: none; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; width: 560px; max-height: 85vh; overflow-y: auto; border-radius: 4px; }
+  .modal-header { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #fff; z-index: 1; }
+  .modal-header h3 { font-family: 'Playfair Display', serif; font-size: 20px; }
+  .modal-body { padding: 1.5rem; }
+  .form-section { margin-bottom: 1.5rem; }
+  .form-section h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 1rem; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group label { font-size: 12px; font-weight: 500; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-group input, .form-group select { border: 1px solid var(--border); padding: 10px 12px; border-radius: 2px; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color .2s; background: #fff; color: var(--black); }
+  .form-group input:focus, .form-group select:focus { border-color: var(--black); }
+  .order-summary { background: #faf9f7; border: 1px solid var(--border); border-radius: 4px; padding: 1rem; margin-bottom: 1.5rem; }
+  .order-sum-title { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: #444; }
+  .order-sum-item { display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 6px; }
+  .order-sum-total { display: flex; justify-content: space-between; font-size: 16px; font-weight: 600; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .payment-methods { display: flex; gap: 8px; margin-bottom: 1rem; }
+  .pay-method { flex: 1; border: 1px solid var(--border); border-radius: 2px; padding: 10px; text-align: center; cursor: pointer; font-size: 12px; font-weight: 500; transition: all .2s; }
+  .pay-method.selected { border-color: var(--black); background: var(--black); color: #fff; }
+
+  .detail-modal { background: #fff; width: 700px; max-height: 90vh; overflow-y: auto; border-radius: 4px; }
+  .detail-content { display: grid; grid-template-columns: 1fr 1fr; min-height: 400px; }
+  .detail-img { background: #f5f3f0; display: flex; align-items: center; justify-content: center; font-size: 96px; }
+  .detail-info { padding: 2rem; }
+  .detail-brand { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #888; margin-bottom: 8px; }
+  .detail-name { font-family: 'Playfair Display', serif; font-size: 26px; line-height: 1.2; margin-bottom: 12px; }
+  .detail-price-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .detail-price { font-size: 24px; font-weight: 600; }
+  .detail-old-price { font-size: 16px; color: #aaa; text-decoration: line-through; }
+  .detail-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .detail-desc { font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 20px; }
+  .size-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 500; margin-bottom: 8px; }
+  .size-options { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .size-opt { width: 44px; height: 44px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; border-radius: 2px; transition: all .2s; }
+  .size-opt.selected, .size-opt:hover { border-color: var(--black); background: var(--black); color: #fff; }
+  .color-options { display: flex; gap: 8px; margin-bottom: 20px; }
+  .color-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: border-color .2s; }
+  .color-dot.selected { border-color: var(--gold); }
+  .reviews-section { padding: 1.5rem; border-top: 1px solid var(--border); }
+  .review-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .review-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .review-name { font-size: 13px; font-weight: 500; }
+  .review-text { font-size: 13px; color: #555; line-height: 1.6; }
+
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--black); color: #fff; padding: 12px 20px; border-radius: 4px; font-size: 14px; z-index: 500; transform: translateY(100px); opacity: 0; transition: all .3s; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 150; display: none; }
+  .backdrop.open { display: block; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Sakur<span>a</span></div>
+  <ul class="nav-links">
+    <li><a onclick="filterCategory('Semua')">Koleksi</a></li>
+    <li><a onclick="filterCategory('Atasan')">Atasan</a></li>
+    <li><a onclick="filterCategory('Bawahan')">Bawahan</a></li>
+    <li><a onclick="filterCategory('Outerwear')">Outerwear</a></li>
+    <li><a onclick="filterCategory('Dress')">Dress</a></li>
+  </ul>
+  <div class="nav-icons">
+    <div class="search-bar">
+      <span style="font-size:14px;color:#888">&#9906;</span>
+      <input type="text" placeholder="Cari produk..." oninput="searchProducts(this.value)">
+    </div>
+    <button class="icon-btn" onclick="toggleCart()">
+      &#128722;
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-text">
+    <h1>Koleksi<br><em>Musim Baru</em><br>2025</h1>
+    <p>Tampil elegan setiap hari dengan koleksi fashion terkini kami. Kualitas premium, harga terjangkau.</p>
+    <button class="btn-primary" onclick="filterCategory('Semua')">Lihat Koleksi</button>
+    <button class="btn-outline" onclick="filterCategory('Dress')">Koleksi Dress</button>
+  </div>
+  <div class="hero-images">
+    <div class="hero-img-card">
+      <div style="width:100%;height:100%;background:linear-gradient(180deg,#3d2b1f,#6b4226);display:flex;align-items:center;justify-content:center;font-size:48px">👗</div>
+    </div>
+    <div class="hero-img-card">
+      <div style="width:100%;height:100%;background:linear-gradient(180deg,#1a2d3d,#2c4a6e);display:flex;align-items:center;justify-content:center;font-size:48px">🧥</div>
+    </div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <div class="filter-chips">
+    <div class="chip active" onclick="filterCategory('Semua', this)">Semua</div>
+    <div class="chip" onclick="filterCategory('Atasan', this)">Atasan</div>
+    <div class="chip" onclick="filterCategory('Bawahan', this)">Bawahan</div>
+    <div class="chip" onclick="filterCategory('Outerwear', this)">Outerwear</div>
+    <div class="chip" onclick="filterCategory('Dress', this)">Dress</div>
+    <div class="chip" onclick="filterCategory('Aksesoris', this)">Aksesoris</div>
+  </div>
+  <select class="sort-select" onchange="sortProducts(this.value)">
+    <option value="default">Urutkan: Terbaru</option>
+    <option value="price-asc">Harga: Terendah</option>
+    <option value="price-desc">Harga: Tertinggi</option>
+    <option value="rating">Rating Terbaik</option>
+  </select>
+</div>
+
+<div class="main-content">
+  <h2 class="section-title">Produk Kami</h2>
+  <div class="products-grid" id="productsGrid"></div>
+</div>
+
+<div class="backdrop" id="backdrop" onclick="toggleCart()"></div>
+
+<div class="cart-overlay" id="cartSidebar">
+  <div class="cart-header">
+    <h3>Keranjang Belanja</h3>
+    <button class="close-btn" onclick="toggleCart()">&#10005;</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter"></div>
+</div>
+
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Checkout</h3>
+      <button class="close-btn" onclick="closeCheckout()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="order-summary" id="orderSummary"></div>
+      <div class="form-section">
+        <h4>Informasi Pengiriman</h4>
+        <div class="form-row">
+          <div class="form-group"><label>Nama Depan</label><input placeholder="Budi"></div>
+          <div class="form-group"><label>Nama Belakang</label><input placeholder="Santoso"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>Alamat Lengkap</label><input placeholder="Jl. Sudirman No. 10"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Kota</label><input placeholder="Surakarta"></div>
+          <div class="form-group"><label>Kode Pos</label><input placeholder="57100"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Provinsi</label>
+            <select>
+              <option>Jawa Tengah</option><option>DKI Jakarta</option>
+              <option>Jawa Barat</option><option>Jawa Timur</option><option>Yogyakarta</option>
+            </select>
+          </div>
+          <div class="form-group"><label>No. Telepon</label><input placeholder="+62 812 3456 7890"></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>Metode Pembayaran</h4>
+        <div class="payment-methods">
+          <div class="pay-method selected" onclick="selectPay(this)">Transfer Bank</div>
+          <div class="pay-method" onclick="selectPay(this)">Dompet Digital</div>
+          <div class="pay-method" onclick="selectPay(this)">COD</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nama Bank</label>
+            <select><option>BCA</option><option>BRI</option><option>BNI</option><option>Mandiri</option></select>
+          </div>
+          <div class="form-group"><label>No. Rekening</label><input placeholder="1234567890"></div>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;padding:15px;font-size:15px" onclick="placeOrder()">Konfirmasi Pesanan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="detailModal">
+  <div class="detail-modal">
+    <div class="modal-header">
+      <h3>Detail Produk</h3>
+      <button class="close-btn" onclick="closeDetail()">&#10005;</button>
+    </div>
+    <div class="detail-content" id="detailContent"></div>
+    <div class="reviews-section" id="reviewsSection"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const products = [
+  { id:1, name:'Kemeja Linen Premium', brand:'Sabile Studio', category:'Atasan', price:285000, oldPrice:399000, rating:4.8, reviews:124, emoji:'👔', badge:'sale', colors:['#f5f0e8','#2c3e50','#8b7355'], sizes:['S','M','L','XL','XXL'], desc:'Kemeja linen berkualitas tinggi dengan potongan slim fit yang nyaman. Cocok untuk aktivitas formal maupun kasual.' },
+  { id:2, name:'Dress Midi Floral', brand:'Bloom Collection', category:'Dress', price:425000, oldPrice:null, rating:4.9, reviews:89, emoji:'👗', badge:'best', colors:['#f2d7d5','#a8d8ea','#ffeaa7'], sizes:['XS','S','M','L'], desc:'Dress midi dengan motif bunga yang anggun. Bahan ringan dan breathable, sempurna untuk berbagai acara.' },
+  { id:3, name:'Blazer Oversize Wanita', brand:'Urban Edge', category:'Outerwear', price:569000, oldPrice:750000, rating:4.7, reviews:67, emoji:'🧥', badge:'sale', colors:['#2c2c2c','#c9b99a','#6b7280'], sizes:['S','M','L','XL'], desc:'Blazer oversize dengan siluet modern. Padukan dengan celana panjang atau jeans untuk tampilan stylish.' },
+  { id:4, name:'Celana Kulot Batik', brand:'Nusantara Style', category:'Bawahan', price:195000, oldPrice:null, rating:4.6, reviews:203, emoji:'👖', badge:'new', colors:['#8b4513','#2c3e50','#4a0e8f'], sizes:['S','M','L','XL','XXL'], desc:'Celana kulot berbahan batik asli Indonesia. Desain modern yang memadukan tradisi dan gaya kekinian.' },
+  { id:5, name:'Tank Top Basic Set', brand:'Sabile Studio', category:'Atasan', price:120000, oldPrice:null, rating:4.5, reviews:345, emoji:'👚', badge:'best', colors:['#fff','#1a1a1a','#c9748a','#4a90d9'], sizes:['XS','S','M','L','XL'], desc:'Tank top basic dengan bahan cotton combed 30s yang lembut dan nyaman dipakai sepanjang hari.' },
+  { id:6, name:'Rok Plisket Midi', brand:'Bloom Collection', category:'Bawahan', price:235000, oldPrice:310000, rating:4.8, reviews:156, emoji:'🩳', badge:'sale', colors:['#e8d5c4','#2c3e50','#c9748a'], sizes:['XS','S','M','L'], desc:'Rok plisket midi yang elegan dengan berbagai pilihan warna. Bahan chiffon berkualitas yang jatuh sempurna.' },
+  { id:7, name:'Jaket Denim Vintage', brand:'Urban Edge', category:'Outerwear', price:450000, oldPrice:null, rating:4.6, reviews:78, emoji:'🧣', badge:'new', colors:['#4a7eb5','#1a1a1a','#8b7355'], sizes:['S','M','L','XL'], desc:'Jaket denim dengan sentuhan vintage yang kekinian. Jahitan detail dan bahan denim premium durable.' },
+  { id:8, name:'Set Jumpsuit Kasual', brand:'Nusantara Style', category:'Dress', price:380000, oldPrice:490000, rating:4.7, reviews:112, emoji:'🩱', badge:'sale', colors:['#556b2f','#1a1a1a','#f5f0e8'], sizes:['S','M','L'], desc:'Jumpsuit kasual yang trendi dan multifungsi. Desain simpel namun elegan untuk tampilan all-day.' }
+];
+
+let cart = [];
+let filteredProducts = [...products];
+let wishlist = new Set();
+let selectedSize = {};
+let selectedColor = {};
+
+function renderProducts(list) {
+  const grid = document.getElementById('productsGrid');
+  if (!list.length) { grid.innerHTML = '<p style="color:#888;font-size:14px;grid-column:1/-1">Produk tidak ditemukan.</p>'; return; }
+  grid.innerHTML = list.map(p => `
+    <div class="product-card" onclick="openDetail(${p.id})">
+      <div class="product-img">
+        <span style="font-size:72px">${p.emoji}</span>
+        ${p.badge ? `<span class="product-badge badge-${p.badge}">${p.badge==='new'?'Baru':p.badge==='sale'?'Sale':'Terlaris'}</span>` : ''}
+      </div>
+      <div class="product-info">
+        <div class="product-brand">${p.brand}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-rating">
+          <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
+          <span class="rating-count">${p.rating} (${p.reviews})</span>
+        </div>
+        <div class="product-price">
+          <span class="price-now">Rp ${p.price.toLocaleString('id-ID')}</span>
+          ${p.oldPrice ? `<span class="price-old">Rp ${p.oldPrice.toLocaleString('id-ID')}</span>` : ''}
+        </div>
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="btn-add" onclick="addToCart(${p.id})">+ Keranjang</button>
+        <button class="btn-wish ${wishlist.has(p.id)?'active':''}" id="wish-${p.id}" onclick="toggleWish(${p.id})">♡</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterCategory(cat, el) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  filteredProducts = cat === 'Semua' ? [...products] : products.filter(p => p.category === cat);
+  renderProducts(filteredProducts);
+}
+
+function searchProducts(q) {
+  const result = products.filter(p =>
+    p.name.toLowerCase().includes(q.toLowerCase()) ||
+    p.brand.toLowerCase().includes(q.toLowerCase()) ||
+    p.category.toLowerCase().includes(q.toLowerCase())
+  );
+  renderProducts(result);
+}
+
+function sortProducts(val) {
+  let sorted = [...filteredProducts];
+  if (val === 'price-asc') sorted.sort((a,b) => a.price - b.price);
+  else if (val === 'price-desc') sorted.sort((a,b) => b.price - a.price);
+  else if (val === 'rating') sorted.sort((a,b) => b.rating - a.rating);
+  renderProducts(sorted);
+}
+
+function addToCart(id) {
+  const p = products.find(x => x.id === id);
+  const sz = selectedSize[id] || p.sizes[0];
+  const cl = selectedColor[id] || p.colors[0];
+  const existing = cart.find(x => x.id === id && x.size === sz);
+  if (existing) existing.qty++;
+  else cart.push({...p, qty:1, size:sz, color:cl});
+  updateCartBadge();
+  showToast(`${p.name} ditambahkan ke keranjang ✓`);
+}
+
+function updateCartBadge() {
+  document.getElementById('cartBadge').textContent = cart.reduce((s,i) => s+i.qty, 0);
+}
+
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  document.getElementById('backdrop').classList.toggle('open');
+  renderCart();
+}
+
+function renderCart() {
+  const el = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+  if (!cart.length) {
+    el.innerHTML = '<div class="empty-cart"><span style="font-size:48px">🛍️</span><p>Keranjang belanja kosong</p></div>';
+    footer.innerHTML = '';
+    return;
+  }
+  el.innerHTML = cart.map((item,i) => `
+    <div class="cart-item">
+      <div class="cart-item-img">${item.emoji}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-variant">Ukuran: ${item.size}</div>
+        <div class="cart-item-price">Rp ${(item.price*item.qty).toLocaleString('id-ID')}</div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+        </div>
+      </div>
+      <button class="cart-remove" onclick="removeItem(${i})">✕</button>
+    </div>
+  `).join('');
+  const subtotal = cart.reduce((s,i) => s+i.price*i.qty, 0);
+  const ongkir = 25000;
+  footer.innerHTML = `
+    <div class="cart-total-row"><span>Subtotal</span><span>Rp ${subtotal.toLocaleString('id-ID')}</span></div>
+    <div class="cart-total-row"><span>Ongkos Kirim</span><span>Rp 25.000</span></div>
+    <div class="cart-total-final"><span>Total</span><span>Rp ${(subtotal+ongkir).toLocaleString('id-ID')}</span></div>
+    <button class="btn-checkout" onclick="openCheckout()">Lanjut ke Checkout →</button>
+  `;
+}
+
+function changeQty(i, delta) {
+  cart[i].qty = Math.max(1, cart[i].qty + delta);
+  renderCart(); updateCartBadge();
+}
+
+function removeItem(i) {
+  cart.splice(i, 1);
+  renderCart(); updateCartBadge();
+}
+
+function toggleWish(id) {
+  if (wishlist.has(id)) wishlist.delete(id);
+  else wishlist.add(id);
+  const btn = document.getElementById('wish-'+id);
+  if (btn) btn.classList.toggle('active');
+  showToast(wishlist.has(id) ? 'Ditambahkan ke wishlist ♡' : 'Dihapus dari wishlist');
+}
+
+function openDetail(id) {
+  const p = products.find(x => x.id === id);
+  selectedSize[id] = p.sizes[0];
+  selectedColor[id] = p.colors[0];
+  document.getElementById('detailContent').innerHTML = `
+    <div class="detail-img">${p.emoji}</div>
+    <div class="detail-info">
+      <div class="detail-brand">${p.brand}</div>
+      <div class="detail-name">${p.name}</div>
+      <div class="detail-price-row">
+        <span class="detail-price">Rp ${p.price.toLocaleString('id-ID')}</span>
+        ${p.oldPrice ? `<span class="detail-old-price">Rp ${p.oldPrice.toLocaleString('id-ID')}</span>` : ''}
+        ${p.oldPrice ? `<span style="background:#fce8ec;color:#c0392b;padding:3px 8px;border-radius:2px;font-size:12px;font-weight:500">${Math.round((1-p.price/p.oldPrice)*100)}% OFF</span>` : ''}
+      </div>
+      <div class="detail-rating">
+        <span class="stars" style="font-size:16px">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
+        <span style="font-size:14px;color:#888">${p.rating} dari ${p.reviews} ulasan</span>
+      </div>
+      <p class="detail-desc">${p.desc}</p>
+      <div class="size-label">Pilih Ukuran</div>
+      <div class="size-options" id="sizeOpts-${id}">
+        ${p.sizes.map(s => `<div class="size-opt ${s===selectedSize[id]?'selected':''}" onclick="pickSize(${id},'${s}',this)">${s}</div>`).join('')}
+      </div>
+      <div class="size-label">Warna</div>
+      <div class="color-options" id="colorOpts-${id}">
+        ${p.colors.map((c,ci) => `<div class="color-dot ${ci===0?'selected':''}" style="background:${c};border:2px solid #ddd" onclick="pickColor(${id},'${c}',this)"></div>`).join('')}
+      </div>
+      <button class="btn-primary" style="width:100%;padding:14px;font-size:15px;margin-top:8px" onclick="addToCart(${id});closeDetail()">Tambah ke Keranjang</button>
+    </div>
+  `;
+  const reviews = [
+    {name:'Siti R.', rating:5, text:'Kualitas sangat bagus! Bahannya adem dan jahitannya rapi. Puas banget belanja di sini.'},
+    {name:'Dewi K.', rating:5, text:'Ukurannya sesuai, pengiriman cepat. Sudah order 3 kali, selalu memuaskan!'},
+    {name:'Rina M.', rating:4, text:'Warnanya sesuai foto. Bahan nyaman dipakai seharian. Recommended!'},
+  ];
+  document.getElementById('reviewsSection').innerHTML = `
+    <div style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:1rem">Ulasan Pelanggan</div>
+    ${reviews.map(r => `
+      <div class="review-item">
+        <div class="review-header">
+          <span class="review-name">${r.name}</span>
+          <span class="stars" style="font-size:13px">${'★'.repeat(r.rating)}</span>
+        </div>
+        <p class="review-text">${r.text}</p>
+      </div>
+    `).join('')}
+  `;
+  document.getElementById('detailModal').classList.add('open');
+}
+
+function closeDetail() { document.getElementById('detailModal').classList.remove('open'); }
+
+function pickSize(id, size, el) {
+  selectedSize[id] = size;
+  document.querySelectorAll(`#sizeOpts-${id} .size-opt`).forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function pickColor(id, color, el) {
+  selectedColor[id] = color;
+  document.querySelectorAll(`#colorOpts-${id} .color-dot`).forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function openCheckout() {
+  const subtotal = cart.reduce((s,i) => s+i.price*i.qty, 0);
+  document.getElementById('orderSummary').innerHTML = `
+    <div class="order-sum-title">Ringkasan Pesanan</div>
+    ${cart.map(i => `<div class="order-sum-item"><span>${i.name} (${i.qty}x)</span><span>Rp ${(i.price*i.qty).toLocaleString('id-ID')}</span></div>`).join('')}
+    <div class="order-sum-item" style="margin-top:6px"><span>Ongkos Kirim</span><span>Rp 25.000</span></div>
+    <div class="order-sum-total"><span>Total Pembayaran</span><span>Rp ${(subtotal+25000).toLocaleString('id-ID')}</span></div>
+  `;
+  document.getElementById('checkoutModal').classList.add('open');
+}
+
+function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); }
+
+function selectPay(el) {
+  document.querySelectorAll('.pay-method').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function placeOrder() {
+  closeCheckout(); toggleCart();
+  cart = []; updateCartBadge();
+  showToast('Pesanan berhasil dikonfirmasi! Terima kasih 🎉');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+renderProducts(products);
+</script>
+</body>
+</html>
